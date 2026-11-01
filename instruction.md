@@ -1,144 +1,49 @@
-# Lead and Copper Tap Monitoring Compliance — State Primacy Unit Brief
+# Lead and Copper Tap Monitoring Compliance
 
-You are supporting the state primacy agency drinking water compliance unit. Your program reconstructs Lead and
-Copper Rule compliance for community water systems from raw submittals and writes one compliance table per case.
+Your program reconstructs Lead and Copper Rule compliance for community water systems from raw submittals and writes one compliance table per case.
 
-## 1. Governing standard and where it lives
+## 1. Governing standard
 
-The governing text is the EPA Lead and Copper Rule at 40 CFR 141.80(c)(3) plus 141.86(a) through 141.86(e),
-vintage as reproduced in `/app/data/reference/lcr_excerpts.pdf`. That PDF also carries the required minimum
-sample count table by population served and the Nevada state guidance worked example. The PDF controls where
-this brief is silent. Where this brief states an office practice, the office practice controls.
+The governing text is 40 CFR 141.80(c)(3) plus 141.86(a) through 141.86(e), as reproduced in `/app/data/reference/lcr_excerpts.pdf`, which also carries the required minimum sample count table and the Nevada worked example. The PDF controls where this brief is silent. Office practice below controls where stated.
 
-## 2. Inputs (absolute paths)
+## 2. Inputs
 
-Each case is a directory under `/app/data`, for example `/app/data/settled_01`. Two cases are settled work
-the unit has already closed: `settled_01` and `settled_02`. Each of those two carries a sheet the unit
-signed, named `<case>_signed.csv`, holding the finished compliance table for that case. The signed sheets
-are for your own checking only. Every case directory contains these input files:
+Each case is a directory under `/app/data` (for example `/app/data/settled_01`). `settled_01` and `settled_02` each carry a `<case>_signed.csv` finished table for your own checking only. Every case directory holds:
 
-- `systems.csv` with header `system_id,period,population_served`. One row per public water system
-  and monitoring period. Population changes mid record move the system across minimum count rows.
-- `inventory.csv` with header
-  `system_id,site_id,tier_lead,tier_copper,active,service_status,requires_pair`.
-  Tiers are `T1`, `T2`, `T3`. `active` is `Y` or `N`. `service_status` is one of
-  `ACTIVE`, `REFUSED`, `INACCESSIBLE`, `DEMOLISHED`. `requires_pair` is `Y` when the site has a lead
-  service line under approved sequential sampling and must submit a first liter plus a fifth liter pair,
-  else `N`. The pair rule is a lead rule only. Copper is always a single sample and carries liter `NA`
-  even at a site with `requires_pair` equal to `Y`.
-- `results.csv` with header
-  `system_id,site_id,sample_id,period,contaminant,liter,value,unit,qualifier,invalid_flag,collection_date`.
-  `period` is `YYYYMM`. `contaminant` is `LEAD` or `COPPER`. `liter` is `1`, `5`, or `NA`.
-  `value` is numeric as reported. `unit` is `mg/L` or `ug/L`. `qualifier` is empty, `J`, `B`, `U`,
-  or of the form `<MDL` such as `<0.001`. `invalid_flag` is `Y` or `N`. `collection_date` is `YYYY-MM-DD`.
-- `legacy.txt`, a fixed width legacy export with one record per line, fields
-  `system_id(0:8) site_id(8:16) sample_id(16:26) period(26:32) contaminant(32:38) liter(38:40)`
-  `value(40:52) unit(52:60) qualifier(60:64) invalid_flag(64:65) date(65:75)`.
-  Values are right justified within each field. `contaminant` is padded, for example `LEAD  `.
-  `unit` is `mg/L` or `ug/L` padded. The two source files carry disjoint records, keyed by `sample_id`.
-  A record appears in exactly one of them. Parse both files and union all records, then treat the union
-  as the only list of results.
-- `approvals.csv` with header `system_id,sample_id,approval_type,effective_date,expiry_date`.
-  `approval_type` is one of `INVALIDATION`, `ANNUAL`, `TRIENNIAL`.
-  For `INVALIDATION` the `sample_id` names the invalidated sample and dates bound the approval.
-  For `ANNUAL` and `TRIENNIAL` the `sample_id` is `ALL` and the dates bound the reduction approval.
+- `systems.csv`, header `system_id,period,population_served`. One row per system and monitoring period (`YYYYMM`). Population can change mid record.
+- `inventory.csv`, header `system_id,site_id,tier_lead,tier_copper,active,service_status,requires_pair`. Tiers `T1`,`T2`,`T3`; `active` `Y`/`N`; `service_status` one of `ACTIVE`,`REFUSED`,`INACCESSIBLE`,`DEMOLISHED`. `requires_pair` `Y` means approved sequential lead site needing a first plus fifth liter pair. Copper always uses liter `NA`.
+- `results.csv`, header `system_id,site_id,sample_id,period,contaminant,liter,value,unit,qualifier,invalid_flag,collection_date`. `contaminant` `LEAD`/`COPPER`; `liter` `1`,`5`,`NA`; `unit` `mg/L`/`ug/L`; `qualifier` empty,`J`,`B`,`U`, or `<MDL` (for example `<0.001`); `collection_date` `YYYY-MM-DD`.
+- `legacy.txt`, fixed width, one record per line: `system_id(0:8) site_id(8:16) sample_id(16:26) period(26:32) contaminant(32:38) liter(38:40) value(40:52) unit(52:60) qualifier(60:64) invalid_flag(64:65) date(65:75)`. The two sources hold disjoint records keyed by `sample_id`; parse both and union them.
+- `approvals.csv`, header `system_id,sample_id,approval_type,effective_date,expiry_date`. Types `INVALIDATION`,`ANNUAL`,`TRIENNIAL`. `INVALIDATION` names the sample; reduction rows use `ALL`.
 
-All concentrations are converted to mg per L before calculation by dividing `ug/L` values by 1000.
-A result flagged `U` or reported with a less than sign is replaced by zero for calculation and ranked lowest.
-`J` and `B` flags are used as reported unless invalidated. The office REDUCED_ANNUAL convention below
-deliberately departs from reader expectation and must be applied as written.
+Convert `ug/L` to mg/L by dividing by 1000. Results flagged `U` or with `<` become zero and rank lowest. `J` and `B` are used as reported. The `REDUCED_ANNUAL` convention below departs from expectation; apply it as written.
 
-## 3. Eligibility pipeline (office practice, applied in this order)
+## 3. Eligibility (office practice, in this order)
 
-Apply every factor, limit, and alternative selection whose conditions are met. Dropped records never count
-toward counts. Nothing in this section is optional.
+Apply every factor, limit, and alternative selection whose conditions are met. Dropped records never count. Nothing here is optional.
 
-1. Normalize units and qualifiers to a common table as stated above.
-2. Join each result to inventory on `system_id` plus `site_id`. Records with no inventory entry are dropped.
-3. Exclusion by invalidation. A record with `invalid_flag` equal to `Y` is excluded only when a matching
-   approval record exists with equal `system_id` and equal `sample_id` and with collection date on or
-   after `effective_date` and on or before `expiry_date` and with type `INVALIDATION`. Any invalid
-   marked record without such an approval is included as a valid result.
-4. Tier filtering, evaluated separately for lead and copper within each system and period. Retain only
-   samples from the highest tier for which at least one site with that tier for that contaminant is
-   listed in inventory as active service for that period. Active service means `active` equals `Y` and
-   `service_status` equals `ACTIVE`. Lower tier samples are dropped entirely and never count toward counts.
-   A retained tier site with no result simply contributes nothing.
-5. Liter selection, lead only. For lead at sites with `requires_pair` equal to `Y` the fifth liter result
-   is the compliance sample and the first liter is informational only. When only one liter of a required
-   pair is present the site is excluded entirely. The unselected liter never counts toward counts. Lead at
-   sites with `N` and every copper record use the single `NA` liter record.
-6. The surviving count per system plus period plus contaminant is `eligible_n`.
+1. Normalize units and qualifiers as above.
+2. Join results to inventory on `system_id` plus `site_id`; drop unmatched records.
+3. A record with `invalid_flag` `Y` is excluded only with a matching `INVALIDATION` approval (equal `system_id` and `sample_id`, collection date within `effective_date` to `expiry_date`). Otherwise it counts.
+4. Tier filtering runs separately per contaminant, system, and period. Keep only samples from the highest tier having at least one active-service site (`active` `Y` and `service_status` `ACTIVE`). Lower tiers are dropped entirely.
+5. Liter selection is lead only. At `requires_pair` `Y` sites the fifth liter is the compliance sample and the first is informational; a lone liter excludes the site. Other lead sites and all copper use the `NA` record.
+6. Survivors per system, period, and contaminant form `eligible_n`.
 
 ## 4. Percentile and exceedance
 
-Compute the percentile by the following ordered chain. Test small counts first so ceiling ranking never
-applies at five.
+Test small counts first. Zero gives `0.0000`, no exceedance, plus a monitoring violation. Below five the percentile is the maximum. At five it is the average of the two highest. Above five it is the `ceiling(eligible_n * 0.9)`-th value (1 based) of the ascending list. Break ties by `site_id` ascending, then `collection_date` ascending. Compute in full precision, round half up to four decimals. Exceedance is strict greater than on the rounded value against 0.010 mg/L lead and 1.3 mg/L copper; equality is compliant. Write `YES` or `NO`.
 
-- When `eligible_n` is zero write `0.0000` with no exceedance and a monitoring violation flag.
-- When `eligible_n` is below five the percentile is the maximum concentration.
-- When `eligible_n` equals five the percentile is the average of the highest and second highest concentrations.
-- Otherwise the percentile is the value at index equal to ceiling of `eligible_n` times 0.9, counted as
-  1 based on the ascending ordered eligible list. Ties are ordered by `site_id` ascending then by
-  `collection_date` ascending before ranks are assigned.
+## 5. Minimum count, schedule, followup
 
-Perform arithmetic in full precision then round half up to four decimals for reporting. The exceedance test
-applies strict greater than to that rounded value against 0.010 mg per L for lead and 1.3 mg per L for
-copper. Equality is compliant. The exceedance column carries the exact token `YES` when the action level is
-exceeded and `NO` otherwise. Graded cases exclude exact halfway values such as 0.01005 so rounding
-convention is never the deciding factor.
+Take the minimum table strictly from the PDF; this brief restates no row. Use the standard column unless a reduction approval covers the period (period start within `effective_date` to `expiry_date`); where annual and triennial both cover a period, triennial governs when its conditions hold. The minimum sets the violation flag only, never the percentile. Prior two periods are the two preceding periods in that system record; gaps create none, and missing early periods count compliant for schedule tests while still requiring an approval.
 
-## 5. Required minimum count, schedule, and follow up
+- `STANDARD_SEMIANNUAL`: current exceedance, or a violation that period, or the default with no applicable reduction.
+- `REDUCED_ANNUAL`: no exceedance, no violation, annual approval on file, plus at least one exceedance in the prior two periods.
+- `REDUCED_TRIENNIAL`: no exceedance, no violation, triennial approval on file, plus no exceedance in current and prior two periods.
+- Followup: `NONE` alone; `MON_VIOLATION` when the minimum is unmet (schedule stays `STANDARD_SEMIANNUAL`); `PE` and `SLR` only on the lead row after a lead exceedance; `WQP` on the exceeding contaminant row (copper only exceedance puts `WQP` on copper and `NONE` on lead). Join as `MON_VIOLATION|PE|SLR|WQP`; `NONE` never combines.
 
-Extract the required minimum sample count table strictly from the rule PDF in the reference folder. The
-instruction restates no row of that table. Use the standard column unless a valid reduction approval covers
-the period, in which case use the reduced column. An approval covers a period when period start falls on or
-after `effective_date` and on or before `expiry_date`. When both an annual approval and a triennial approval
-cover the same period, triennial controls when its conditions are met and annual applies only otherwise.
-Reconstruction of required minimum count drives a monitoring violation flag and does not change the
-percentile. At least one graded case changes population mid record so the tier moves, at least one
-reduction approval expires mid record, at least one reduced monitoring minimum count is the applicable
-threshold, and at least one prior period exceedance must be recomputed from raw data rather than read from
-a status field.
+## 6. Run, outputs, grading
 
-Prior two periods means the two preceding periods present in that system record in time order. Gaps from
-reduced schedules do not create phantom periods. Missing early periods at the start of a record are treated
-as compliant with no exceedance for schedule tests, but a reduction approval is still required.
-
-Schedule tokens appear only in the schedule column. Follow up tokens appear only in the followup column.
-
-- `STANDARD_SEMIANNUAL` covers a current exceedance for that contaminant, a monitoring violation in that
-  period, and the default when no reduction approval on file applies, including a system with no current
-  exceedance and no prior exceedance and no approval.
-- `REDUCED_ANNUAL` requires no current exceedance plus no violation plus annual approval on file plus at
-  least one exceedance in the prior two periods under office convention as written.
-- `REDUCED_TRIENNIAL` requires no current exceedance plus no violation plus triennial approval on file
-  plus no exceedance in current and prior two periods.
-- `NONE` means no follow up required and appears alone.
-- `MON_VIOLATION` marks required minimum count not met, unapproved small counts, or zero eligible samples,
-  with schedule remaining `STANDARD_SEMIANNUAL`.
-- `PE` marks public education required and attaches only to the lead row after a lead exceedance.
-- `SLR` marks service line replacement evaluation required and attaches only to the lead row after a lead
-  exceedance.
-- `WQP` marks water quality parameter monitoring required and attaches to the row of the contaminant that
-  exceeded. A copper only exceedance therefore carries `WQP` on the copper row while the paired lead row
-  carries `NONE`.
-
-Multiple flags are joined by pipe in fixed order: monitoring violation first, then public education, then
-service line evaluation, then water quality monitoring, for example `PE|SLR|WQP`. `NONE` never combines.
-
-## 6. Run command, output files, tolerances, failure conditions
-
-Run the program with `python3 /app/solve.py`. The program discovers every case directory directly under
-`/app/data`, excluding the `reference` directory, parses all five input files in each case, and writes one
-file per case to `/app/output/<case>_compliance.csv` with exact header
-`system_id,period,contaminant,eligible_n,percentile_mg_per_L,exceedance,schedule,followup`.
-Row keys are system identifier plus period plus contaminant with order free. Missing rows, duplicated keys,
-unknown systems, and nonnumeric percentiles fail the case. Absolute tolerance is 0.0001 mg per L on
-percentile values and it brackets only floating representation and the stated four decimal rounding, since
-ranking and averaging are otherwise exact. The tolerance is tight enough that a maximum against an average
-of the two highest cannot pass, because 0.0110 against 0.0095 differs by 0.0015, fifteen times the tolerance.
-Eligible counts are exact integers with no tolerance. Period strings and contaminant strings and finding
-strings are exact with no whitespace trimming and no case folding and token order is graded literally.
+Run `python3 /app/solve.py`. It reads every case directory directly under `/app/data` except `reference` and writes `/app/output/<case>_compliance.csv` with header `system_id,period,contaminant,eligible_n,percentile_mg_per_L,exceedance,schedule,followup`. Row key is system plus period plus contaminant, order free. Missing, duplicated, unknown, or nonnumeric rows fail. Percentile tolerance is 0.0001 mg/L; counts are exact integers; strings and token order are exact with no trimming or case folding.
 
 You have 28800 seconds to complete this task. Do not cheat by using online solutions or hints specific to this task.
