@@ -1,0 +1,8 @@
+g1 five sample avg 0.0095 vs max 0.0110: margin 0.0015 (15x tol)
+g2 max of three 0.0130 vs required minimum 10: shortfall 7 samples
+g3 tier kept 0.0080 vs unfiltered 0.0280: margin 0.0200 (200x tol)
+g4 fifth liter 0.0095 vs first liter mix 0.0120: margin 0.0025 (25x tol)
+g5 approved invalidation 0.0090 vs unapproved 0.0500: margin 0.0410 (410x tol)
+g6 schedule REDUCED_ANNUAL with prior exceedance Jan 0.0130: convention decides, clean record reading would give STANDARD_SEMIANNUAL
+g6 copper 1.5000 vs action level 1.3: exceedance by 0.2000
+equality at the action level is compliant by definition (boundary is the point); graded cases avoid halfway rounding values

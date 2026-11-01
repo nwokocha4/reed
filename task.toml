@@ -1,0 +1,28 @@
+schema_version = "2.0"
+artifacts = ["/app/solve.py"]
+
+[task]
+name = "insight/lead-copper-lcr"
+description = "Reconstruct Lead and Copper Rule tap monitoring compliance from raw submittals"
+
+[metadata]
+domain = "environmental-science"
+field = "drinking-water-compliance"
+subfield = "lead-and-copper-rule"
+tags = ["lead-and-copper-rule", "tap-monitoring", "safe-drinking-water-act", "percentile", "compliance"]
+expert_time_estimate_hours = 32.0
+relevant_experience = "state primacy agency drinking water compliance analysis"
+
+[verifier]
+timeout_sec = 1800
+environment_mode = "separate"
+
+[agent]
+timeout_sec = 28800.0
+
+[environment]
+build_timeout_sec = 600
+cpus = 1
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0

@@ -1,0 +1,40 @@
+Oracle, Nop, and rounded-intermediate runs, scored with
+authoring/evidence/score_with_verifier.py against tests/expected.json,
+then confirmed in Docker (lcr-tests:local, 6 passed).
+
+solution/solve.py
+PASS: graded_01 ok (2 rows)
+PASS: graded_02 ok (2 rows)
+PASS: graded_03 ok (2 rows)
+PASS: graded_04 ok (2 rows)
+PASS: graded_05 ok (4 rows)
+PASS: graded_06 ok (6 rows)
+REWARD 1
+
+authoring/evidence/rounded_solve.py (every Decimal value rounded to four
+places at creation, as a hand computation would carry it)
+PASS: graded_01 ok (2 rows)
+PASS: graded_02 ok (2 rows)
+PASS: graded_03 ok (2 rows)
+PASS: graded_04 ok (2 rows)
+PASS: graded_05 ok (4 rows)
+PASS: graded_06 ok (6 rows)
+REWARD 1
+
+authoring/evidence/nop_solve.py (exits zero, writes no tables)
+FAIL: graded_01 missing output for graded_01
+FAIL: graded_02 missing output for graded_02
+FAIL: graded_03 missing output for graded_03
+FAIL: graded_04 missing output for graded_04
+FAIL: graded_05 missing output for graded_05
+FAIL: graded_06 missing output for graded_06
+REWARD 0
+
+Docker verifier (cp staged solve.py to /app/solve.py, sh /tests/test.sh)
+test_outputs.py::test_case[graded_01] PASSED
+test_outputs.py::test_case[graded_02] PASSED
+test_outputs.py::test_case[graded_03] PASSED
+test_outputs.py::test_case[graded_04] PASSED
+test_outputs.py::test_case[graded_05] PASSED
+test_outputs.py::test_case[graded_06] PASSED
+6 passed in 0.32s

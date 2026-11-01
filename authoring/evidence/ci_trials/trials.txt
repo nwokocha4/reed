@@ -1,0 +1,25 @@
+Blind probe trials (representative agent misreadings, no verifier access).
+Each probe is a small patch on the reference; each earns REWARD 0 on the
+science, never on parsing.
+
+probe_max.py (ceiling rank at n=5 instead of the average of the two highest)
+FAIL: graded_01 percentile miss for ('PWS101', '202403', 'LEAD'): got 0.011 want 0.0095
+REWARD 0
+
+probe_clean_record.py (annual reduction read as needing a clean record)
+FAIL: graded_06 schedule mismatch for ('PWS107', '202403', 'LEAD'): got 'STANDARD_SEMIANNUAL' want 'REDUCED_ANNUAL'
+REWARD 0
+
+probe_first_liter.py (both liters counted at sequential sites)
+FAIL: graded_04 percentile miss for ('PWS104', '202406', 'LEAD'): got 0.03 want 0.0095
+REWARD 0
+
+Single-trap variants (authoring/evidence/variants.py, all REWARD 0):
+v01_five_sample_max: graded_01 lead 0.011 vs 0.0095
+v02_fewer_than_five_mean: graded_02 lead 0.0093 vs 0.013
+v03_tier_shared_copper: graded_03 lead 0.028 vs 0.008
+v04_first_liter_counts: graded_04 lead 0.012 vs 0.0095
+v05_invalid_flag_alone: graded_05 PWS106 lead 0.009 vs 0.05
+v06_reduced_needs_clean_record: graded_06 March STANDARD_SEMIANNUAL vs REDUCED_ANNUAL
+v07_reduced_column_always: graded_01 followup NONE vs MON_VIOLATION
+v08_legacy_only: graded_01 eligible_n 1 vs 5
