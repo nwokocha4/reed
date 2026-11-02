@@ -1,5 +1,7 @@
 # Lead 90th-Percentile Estimation from Censored Tap Data
 
+Taxonomy: TB-Science domain `Science`, field `Earth`; repository track `science-environmental-sciences` (environmental water-quality compliance).
+
 State primacy unit brief. The agent estimates the 90th percentile of lead
 and copper tap concentrations from censored monitoring data with sampling
 uncertainty, writing one estimate table per case. The governing text is the
