@@ -1,4 +1,2 @@
 pytest==9.1.1
 pytest-json-ctrf==0.5.2
-numpy==2.2.6
-scipy==1.15.3

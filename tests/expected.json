@@ -4,21 +4,21 @@
    "system_id": "PWS101",
    "period": "202403",
    "contaminant": "COPPER",
-   "eligible_n": "5",
-   "percentile_mg_per_L": "0.4000",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "MON_VIOLATION"
+   "n": "6",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.3000",
+   "ucl95_mg_per_L": "0.3000",
+   "exceedance": "NO"
   },
   {
    "system_id": "PWS101",
    "period": "202403",
    "contaminant": "LEAD",
-   "eligible_n": "5",
-   "percentile_mg_per_L": "0.0095",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "MON_VIOLATION"
+   "n": "10",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.0066",
+   "ucl95_mg_per_L": "0.0087",
+   "exceedance": "NO"
   }
  ],
  "graded_02": [
@@ -26,21 +26,21 @@
    "system_id": "PWS102",
    "period": "202404",
    "contaminant": "COPPER",
-   "eligible_n": "3",
-   "percentile_mg_per_L": "0.5000",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "MON_VIOLATION"
+   "n": "3",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.5000",
+   "ucl95_mg_per_L": "0.5000",
+   "exceedance": "NO"
   },
   {
    "system_id": "PWS102",
    "period": "202404",
    "contaminant": "LEAD",
-   "eligible_n": "3",
-   "percentile_mg_per_L": "0.0130",
-   "exceedance": "YES",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "MON_VIOLATION|PE|SLR|WQP"
+   "n": "7",
+   "n_censored": "2",
+   "p90_mg_per_L": "0.0049",
+   "ucl95_mg_per_L": "0.0063",
+   "exceedance": "NO"
   }
  ],
  "graded_03": [
@@ -48,21 +48,21 @@
    "system_id": "PWS103",
    "period": "202405",
    "contaminant": "COPPER",
-   "eligible_n": "6",
-   "percentile_mg_per_L": "0.3000",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "NONE"
+   "n": "4",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.3000",
+   "ucl95_mg_per_L": "0.3000",
+   "exceedance": "NO"
   },
   {
    "system_id": "PWS103",
    "period": "202405",
    "contaminant": "LEAD",
-   "eligible_n": "6",
-   "percentile_mg_per_L": "0.0080",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "NONE"
+   "n": "5",
+   "n_censored": "1",
+   "p90_mg_per_L": "0.0095",
+   "ucl95_mg_per_L": "0.0168",
+   "exceedance": "YES"
   }
  ],
  "graded_04": [
@@ -70,21 +70,21 @@
    "system_id": "PWS104",
    "period": "202406",
    "contaminant": "COPPER",
-   "eligible_n": "7",
-   "percentile_mg_per_L": "0.3500",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "NONE"
+   "n": "5",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.4139",
+   "ucl95_mg_per_L": "0.5513",
+   "exceedance": "NO"
   },
   {
    "system_id": "PWS104",
    "period": "202406",
    "contaminant": "LEAD",
-   "eligible_n": "5",
-   "percentile_mg_per_L": "0.0095",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "NONE"
+   "n": "9",
+   "n_censored": "4",
+   "p90_mg_per_L": "0.0055",
+   "ucl95_mg_per_L": "0.0092",
+   "exceedance": "NO"
   }
  ],
  "graded_05": [
@@ -92,103 +92,83 @@
    "system_id": "PWS105",
    "period": "202407",
    "contaminant": "COPPER",
-   "eligible_n": "7",
-   "percentile_mg_per_L": "0.4000",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "NONE"
+   "n": "6",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.3000",
+   "ucl95_mg_per_L": "0.3000",
+   "exceedance": "NO"
   },
   {
    "system_id": "PWS105",
    "period": "202407",
    "contaminant": "LEAD",
-   "eligible_n": "6",
-   "percentile_mg_per_L": "0.0090",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "NONE"
-  },
-  {
-   "system_id": "PWS106",
-   "period": "202407",
-   "contaminant": "COPPER",
-   "eligible_n": "7",
-   "percentile_mg_per_L": "0.4000",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "NONE"
-  },
-  {
-   "system_id": "PWS106",
-   "period": "202407",
-   "contaminant": "LEAD",
-   "eligible_n": "7",
-   "percentile_mg_per_L": "0.0500",
-   "exceedance": "YES",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "PE|SLR|WQP"
+   "n": "8",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.0096",
+   "ucl95_mg_per_L": "0.0146",
+   "exceedance": "YES"
   }
  ],
  "graded_06": [
   {
-   "system_id": "PWS107",
-   "period": "202401",
+   "system_id": "PWS106",
+   "period": "202407",
    "contaminant": "COPPER",
-   "eligible_n": "10",
-   "percentile_mg_per_L": "0.3000",
-   "exceedance": "NO",
-   "schedule": "REDUCED_TRIENNIAL",
-   "followup": "NONE"
+   "n": "0",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.0000",
+   "ucl95_mg_per_L": "0.0000",
+   "exceedance": "NO"
   },
   {
-   "system_id": "PWS107",
-   "period": "202401",
+   "system_id": "PWS106",
+   "period": "202407",
    "contaminant": "LEAD",
-   "eligible_n": "10",
-   "percentile_mg_per_L": "0.0130",
-   "exceedance": "YES",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "PE|SLR|WQP"
+   "n": "2",
+   "n_censored": "2",
+   "p90_mg_per_L": "0.0050",
+   "ucl95_mg_per_L": "0.0050",
+   "exceedance": "NO"
   },
   {
-   "system_id": "PWS107",
-   "period": "202402",
+   "system_id": "PWS106",
+   "period": "202408",
    "contaminant": "COPPER",
-   "eligible_n": "10",
-   "percentile_mg_per_L": "0.3000",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "NONE"
+   "n": "1",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.0070",
+   "ucl95_mg_per_L": "0.0070",
+   "exceedance": "NO"
   },
   {
-   "system_id": "PWS107",
-   "period": "202402",
+   "system_id": "PWS106",
+   "period": "202408",
    "contaminant": "LEAD",
-   "eligible_n": "10",
-   "percentile_mg_per_L": "0.0036",
-   "exceedance": "NO",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "NONE"
+   "n": "3",
+   "n_censored": "2",
+   "p90_mg_per_L": "0.0090",
+   "ucl95_mg_per_L": "0.0090",
+   "exceedance": "NO"
   },
   {
-   "system_id": "PWS107",
-   "period": "202403",
+   "system_id": "PWS106",
+   "period": "202409",
    "contaminant": "COPPER",
-   "eligible_n": "10",
-   "percentile_mg_per_L": "1.5000",
-   "exceedance": "YES",
-   "schedule": "STANDARD_SEMIANNUAL",
-   "followup": "WQP"
+   "n": "0",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.0000",
+   "ucl95_mg_per_L": "0.0000",
+   "exceedance": "NO"
   },
   {
-   "system_id": "PWS107",
-   "period": "202403",
+   "system_id": "PWS106",
+   "period": "202409",
    "contaminant": "LEAD",
-   "eligible_n": "10",
-   "percentile_mg_per_L": "0.0036",
-   "exceedance": "NO",
-   "schedule": "REDUCED_ANNUAL",
-   "followup": "NONE"
+   "n": "0",
+   "n_censored": "0",
+   "p90_mg_per_L": "0.0000",
+   "ucl95_mg_per_L": "0.0000",
+   "exceedance": "NO"
   }
  ]
 }

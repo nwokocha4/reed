@@ -1,4 +1,4 @@
-"""Single trap variants: each one flips exactly one office convention in a
+"""Single trap variants: each one flips exactly one method convention in a
 copy of the reference solution, proving that convention decides the grade.
 
 Writes variant programs under ci_trials/variants/ and scores each with the
@@ -16,39 +16,35 @@ SCORER = os.path.join(TASK, "authoring", "evidence", "score_with_verifier.py")
 # Each entry: name plus a list of (old, new) replacements applied once.
 # Anchors are single exact source lines, verified against solve.py.
 VARIANTS = [
-    ("v01_five_sample_max",
-     [("    elif n == 5:\n        raw = (concs[-1] + concs[-2]) / Decimal(2)\n",
-       "    elif n == 5:\n        raw = concs[-1]\n")]),
-    ("v02_fewer_than_five_mean",
-     [("    if n < 5:\n        raw = concs[-1]\n",
-       "    if n < 5:\n        raw = sum(concs, Decimal(0)) / Decimal(n)\n")]),
-    ("v03_tier_shared_copper",
-     [("    tier_key = \"tier_lead\" if contaminant == \"LEAD\" else \"tier_copper\"\n",
-       "    tier_key = \"tier_copper\"\n")]),
-    ("v04_first_liter_counts",
-     [("                out.extend([(r, c) for r, c in items "
-       "if str(r[\"liter\"]).strip() == \"5\"])\n",
-       "                out.extend([(r, c) for r, c in items "
-       "if str(r[\"liter\"]).strip() in (\"1\", \"5\")])\n")]),
-    ("v05_invalid_flag_alone",
-     [("        if str(r.get(\"invalid_flag\", \"N\")).strip() == \"Y\":\n"
-       "            if approval_covers(approvals, system_id, r[\"sample_id\"], "
-       "\"INVALIDATION\", coll):\n"
-       "                continue\n",
-       "        if str(r.get(\"invalid_flag\", \"N\")).strip() == \"Y\":\n"
-       "            continue\n")]),
-    ("v06_reduced_needs_clean_record",
-     [("                elif annual and not exc and not viol and prior_exc:\n"
-       "                    sched = \"REDUCED_ANNUAL\"\n",
-       "                elif annual and not exc and not viol and not prior_exc:\n"
-       "                    sched = \"REDUCED_ANNUAL\"\n")]),
-    ("v07_reduced_column_always",
-     [("            req = required_minimum(pop[(sid, per)], "
-       "reduced=(annual or triennial))",
-       "            req = required_minimum(pop[(sid, per)], reduced=True)")]),
-    ("v08_legacy_only",
-     [("    for r in results:\n        by_id[r[\"sample_id\"]] = r\n",
-       "    for r in results:\n        pass\n")]),
+    ("v01_no_unit_conversion",
+     [("    if str(unit).strip() == \"ug/L\":\n        v = v / 1000.0\n",
+       "    if str(unit).strip() == \"ug/L\":\n        pass\n")]),
+    ("v02_censor_flags_ignored",
+     [("    q = str(qualifier or \"\").strip()\n"
+       "    return q == \"U\" or q.startswith(\"<\")\n",
+       "    q = str(qualifier or \"\").strip()\n"
+       "    return False\n")]),
+    ("v03_tie_censored_above",
+     [("    ordered = sorted(items, key=lambda o: (o[\"conc\"], 0 if o[\"censored\"] else 1))\n",
+       "    ordered = sorted(items, key=lambda o: (o[\"conc\"], 1 if o[\"censored\"] else 0))\n")]),
+    ("v04_zero_rows_dropped",
+     [("        cens = is_censored(r.get(\"qualifier\", \"\"))\n        if conc <= 0:\n            cens = True\n",
+       "        cens = is_censored(r.get(\"qualifier\", \"\"))\n        if conc <= 0:\n            continue\n")]),
+    ("v05_p90_decides_finding",
+     [("            exc = \"YES\" if ucl > AL[cont] else \"NO\"\n",
+       "            exc = \"YES\" if p90 > AL[cont] else \"NO\"\n")]),
+    ("v06_censored_in_regression",
+     [("                 if not o[\"censored\"] and o[\"conc\"] > 0]\n",
+       "                 if o[\"conc\"] > 0]\n")]),
+    ("v07_percentile_at_z95",
+     [("    logp90 = mu + Z90 * sigma\n",
+       "    logp90 = mu + Z95 * sigma\n"),
+      ("        se = sigma * math.sqrt(1.0 / n + Z90 ** 2 / (2.0 * (n - 1)))\n",
+       "        se = sigma * math.sqrt(1.0 / n + Z95 ** 2 / (2.0 * (n - 1)))\n")]),
+    ("v08_stray_period_counts",
+     [("    roster = [(r[\"system_id\"], r[\"period\"]) for r in systems]\n",
+       "    roster = [(r[\"system_id\"], r[\"period\"]) for r in systems]\n"
+       "    roster = list({(r[\"system_id\"], r[\"period\"]) for r in systems} | {(r[\"system_id\"], r[\"period\"]) for r in results})\n")]),
 ]
 
 

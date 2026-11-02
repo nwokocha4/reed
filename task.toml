@@ -2,14 +2,14 @@ schema_version = "2.0"
 artifacts = ["/app/solve.py"]
 
 [task]
-name = "insight/lead-copper-lcr"
-description = "Reconstruct Lead and Copper Rule tap monitoring compliance from raw submittals"
+name = "insight/lead-copper-ros"
+description = "Estimate lead and copper 90th percentiles from censored tap data via lognormal ROS with UCL95"
 
 [metadata]
 domain = "environmental-science"
 field = "drinking-water-compliance"
 subfield = "lead-and-copper-rule"
-tags = ["lead-and-copper-rule", "tap-monitoring", "safe-drinking-water-act", "percentile", "compliance"]
+tags = ["lead-and-copper-rule", "censored-data", "ros", "lognormal", "ucl", "tap-monitoring", "safe-drinking-water-act"]
 expert_time_estimate_hours = 32.0
 relevant_experience = "state primacy agency drinking water compliance analysis"
 

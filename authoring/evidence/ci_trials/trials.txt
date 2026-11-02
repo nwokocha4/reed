@@ -2,24 +2,24 @@ Blind probe trials (representative agent misreadings, no verifier access).
 Each probe is a small patch on the reference; each earns REWARD 0 on the
 science, never on parsing.
 
-probe_max.py (ceiling rank at n=5 instead of the average of the two highest)
-FAIL: graded_01 percentile miss for ('PWS101', '202403', 'LEAD'): got 0.011 want 0.0095
+probe_max.py (every value read as mg/L, no unit conversion)
+FAIL: graded_01 p90_mg_per_L miss for ('PWS101', '202403', 'LEAD'): got 27.3876 want 0.0066
 REWARD 0
 
-probe_clean_record.py (annual reduction read as needing a clean record)
-FAIL: graded_06 schedule mismatch for ('PWS107', '202403', 'LEAD'): got 'STANDARD_SEMIANNUAL' want 'REDUCED_ANNUAL'
+probe_clean_record.py (censor flags ignored, every row a detect)
+FAIL: graded_02 p90_mg_per_L miss for ('PWS102', '202404', 'LEAD'): got 0.0061 want 0.0049
 REWARD 0
 
-probe_first_liter.py (both liters counted at sequential sites)
-FAIL: graded_04 percentile miss for ('PWS104', '202406', 'LEAD'): got 0.03 want 0.0095
+probe_first_liter.py (exceedance judged by p90 instead of UCL95)
+FAIL: graded_05 exceedance mismatch for ('PWS105', '202407', 'LEAD'): got 'NO' want 'YES'
 REWARD 0
 
 Single-trap variants (authoring/evidence/variants.py, all REWARD 0):
-v01_five_sample_max: graded_01 lead 0.011 vs 0.0095
-v02_fewer_than_five_mean: graded_02 lead 0.0093 vs 0.013
-v03_tier_shared_copper: graded_03 lead 0.028 vs 0.008
-v04_first_liter_counts: graded_04 lead 0.012 vs 0.0095
-v05_invalid_flag_alone: graded_05 PWS106 lead 0.009 vs 0.05
-v06_reduced_needs_clean_record: graded_06 March STANDARD_SEMIANNUAL vs REDUCED_ANNUAL
-v07_reduced_column_always: graded_01 followup NONE vs MON_VIOLATION
-v08_legacy_only: graded_01 eligible_n 1 vs 5
+v01_no_unit_conversion: graded_01 lead p90 27.3876 vs 0.0066
+v02_censor_flags_ignored: graded_02 lead p90 0.0061 vs 0.0049
+v03_tie_censored_above: graded_03 lead p90 0.015 vs 0.0095
+v04_zero_rows_dropped: graded_04 lead p90 0.0065 vs 0.0055
+v05_p90_decides_finding: graded_03 lead exceedance NO vs YES
+v06_censored_in_regression: graded_02 lead p90 0.0075 vs 0.0049
+v07_percentile_at_z95: graded_01 lead p90 0.0076 vs 0.0066
+v08_stray_period_counts: graded_01 unknown key ('PWS101', '202402', 'COPPER')

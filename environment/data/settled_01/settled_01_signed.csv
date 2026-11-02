@@ -1,3 +1,3 @@
-system_id,period,contaminant,eligible_n,percentile_mg_per_L,exceedance,schedule,followup
-PWS001,202401,COPPER,20,0.3700,NO,STANDARD_SEMIANNUAL,NONE
-PWS001,202401,LEAD,20,0.0040,NO,STANDARD_SEMIANNUAL,NONE
+system_id,period,contaminant,n,n_censored,p90_mg_per_L,ucl95_mg_per_L,exceedance
+PWS001,202401,COPPER,10,0,0.3000,0.3000,NO
+PWS001,202401,LEAD,10,0,0.0066,0.0087,NO

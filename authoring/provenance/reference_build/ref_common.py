@@ -36,7 +36,7 @@ def _wrap(text, width=92):
         lines.append(cur)
     return lines
 
-def build_pdf(path, pages, title="Lead and Copper Rule - compliance excerpts"):
+def build_pdf(path, pages, title="Lead and Copper Rule - censored-data estimation method"):
     # pages: list of (heading, body_paragraphs[])
     content_objs = []
     for heading, paras in pages:
@@ -99,102 +99,70 @@ def build_pdf(path, pages, title="Lead and Copper Rule - compliance excerpts"):
         f.write(bytes(out))
 
 PAGES = [
-    ("40 CFR 141.80(c) - action levels and percentile (excerpts)", [
-        "(c) Lead and copper action levels and method for determining whether there is an exceedance "
-        "of the action level. Action levels must be determined based on tap water samples that must be "
-        "considered for inclusion under 141.86(e).",
-        "(1) The lead action level is exceeded if the 90th percentile concentration of lead as specified "
-        "in paragraph (c)(3) of this section is greater than 0.010 mg/L.",
-        "(2) The copper action level is exceeded if the 90th percentile concentration of copper as "
-        "specified in paragraph (c)(3) of this section is greater than 1.3 mg/L.",
-        "(3) For purposes of this subpart, the 90th percentile concentration must be derived as follows. "
-        "The results of all lead or copper samples taken during a tap sampling period must be placed in "
-        "ascending order from the sample with the lowest concentration to the sample with the highest "
-        "concentration. Each sampling result must be assigned a number, in ascending order beginning with "
-        "the number 1 for the sample with the lowest concentration. The number assigned to the sample with "
-        "the highest concentration must be equal to the total number of samples taken.",
-        "(B) The number of samples taken during the tap sampling period must be multiplied by 0.9.",
-        "(C) The 90th percentile concentration is the concentration in the numbered sample yielded after "
-        "multiplying the number of samples by 0.9.",
-        "(D) For water systems that collect five samples per tap sampling period, the 90th percentile "
-        "concentration is the average of the highest and second highest concentration from the results "
-        "in paragraph (c)(3)(i)(A) of this section.",
-        "(E) For a water system that is allowed by the State to collect fewer than five samples in "
-        "accordance with 141.86(a)(2) or has failed to meet their required minimum number of samples and "
-        "collected fewer than five samples, the sample result with the highest concentration from the "
-        "results in paragraph (c)(3)(i)(A) of this section is considered the 90th percentile value.",
+    ("Lead 90th-percentile estimation from censored tap data - method", [
+        "This note specifies the estimation method for the 90th percentile of "
+        "lead and copper tap concentrations when some results are censored "
+        "(detection limits). The data for each system, monitoring period, and "
+        "contaminant are the reported sample values with their qualifiers. "
+        "Only the roster in systems.csv defines which system-period cells are "
+        "reported; results rows for other periods never count.",
+        "Unit conversion is per row: a value reported in ug/L is divided by "
+        "1000 to give mg/L. Each row converts by its own unit; the file "
+        "carries mixed units and no column-wide assumption is valid.",
+        "A result is censored when its qualifier is U or begins with <, or "
+        "when its converted concentration is zero or below. Other qualifiers "
+        "(including J and B) are detects and are used at face value. A blank "
+        "value field is unparseable and the row is skipped.",
+        "Only LEAD and COPPER rows are used; rows for any other contaminant "
+        "are ignored.",
     ]),
-    ("40 CFR 141.86(a)-(e) - tap site tiers and sampling (excerpts)", [
-        "(a) Selection of sampling sites. Tier 1 sampling sites consist of single family structures with "
-        "lead service lines or copper pipes with lead solder installed after 1982. Tier 2 sites consist of "
-        "buildings with similar plumbing materials. Tier 3 sites consist of single family structures with "
-        "copper pipes with lead solder installed before 1983. Systems must use Tier 1 sites when available.",
-        "Copper tiering keys on copper pipe with lead solder. A site may therefore carry a lead tier that "
-        "differs from its copper tier, and eligibility is evaluated separately for each contaminant.",
-        "(b) Sequential sampling at sites with lead service lines. At a site where the State has approved "
-        "sequential sampling, the compliance sample for lead is the fifth liter drawn after stagnation. The "
-        "first liter is informational only and is not used for compliance when a required pair is present. "
-        "When only one liter of a required pair is present the site is excluded. Sequential sampling applies "
-        "to lead only. Copper at these sites is reported as a single sample and is not subject to the pair "
-        "rule.",
-        "(c) Numbers of samples. The table below gives the required minimum number of samples by population "
-        "served under standard monitoring and under reduced monitoring. Population-served changes move a "
-        "system across minimum-count rows mid-record where applicable.",
+    ("Lognormal regression on order statistics (ROS)", [
+        "Take the natural log of every detected concentration. Sort all "
+        "observations (detects and censored limits) in joint ascending order "
+        "by converted concentration. A censored limit ranks below a detect "
+        "reported at the same numeric value, because the true concentration "
+        "is at or below the limit.",
+        "Assign each rank i = 1..n the Cunnane plotting position "
+        "p = (i - 0.4) / (n + 0.2) and the standard normal quantile z of p. "
+        "Regress the log-detects on their normal quantiles (ordinary least "
+        "squares): the fitted line gives the lognormal location and scale. "
+        "The regression uses detects only; censored limits are never "
+        "regressed, only imputed.",
+        "Impute each censored observation from the fitted line at its own "
+        "rank quantile. The completed log-sample is the observed log-detects "
+        "plus the imputed values. Its mean mu and sample standard deviation "
+        "sigma (denominator n - 1) are the lognormal parameters.",
+        "The 90th percentile estimate is p90 = exp(mu + z_0.90 * sigma), "
+        "where z_0.90 is the 0.90 quantile of the standard normal. Report "
+        "p90 in mg/L rounded half up to four decimals.",
     ]),
-    ("Required minimum sample counts by population served", [
-        "POPULATION SERVED | STANDARD SITES | REDUCED SITES.",
-        "Row 1: population greater than 100,000 | standard 100 sites | reduced 50 sites.",
-        "Row 2: population 10,001 to 100,000 | standard 60 sites | reduced 30 sites.",
-        "Row 3: population 3,301 to 10,000 | standard 40 sites | reduced 20 sites.",
-        "Row 4: population 501 to 3,300 | standard 20 sites | reduced 10 sites.",
-        "Row 5: population 101 to 500 | standard 10 sites | reduced 5 sites.",
-        "Row 6: population 100 or fewer | standard 5 sites | reduced 5 sites.",
-        "Use the standard column unless a valid reduction approval covering the period is on file, in which "
-        "case use the reduced column for that period. A population change mid-record moves the system to the "
-        "row matching the population served in that period.",
+    ("Sampling uncertainty - one-sided upper confidence limit", [
+        "The reported finding accounts for sampling uncertainty through a "
+        "one-sided upper 95 percent confidence limit on the lognormal 90th "
+        "percentile, by the delta method. Its standard error is "
+        "se = sigma * sqrt(1/n + z_0.90^2 / (2*(n-1))). "
+        "The upper limit is UCL95 = exp(mu + z_0.90 * sigma + z_0.95 * se), "
+        "where z_0.95 is the 0.95 quantile of the standard normal. Report "
+        "UCL95 in mg/L rounded half up to four decimals.",
+        "A cell exceeds the action level when its UCL95 is greater than the "
+        "action level: 0.010 mg/L for lead, 1.3 mg/L for copper. The point "
+        "estimate alone never decides the finding; a p90 below the action "
+        "level with a UCL95 above it is an exceedance.",
     ]),
-    ("State guidance worked example - five-sample averaging", [
-        "Nevada Division of Environmental Protection, Bureau of Safe Drinking Water, Guidance for Small Water "
-        "Systems, Section V, Example 2. Ordered lead results in mg/L: 0.008, 0.009, 0.010, 0.013, 0.016.",
-        "Guidance text: If five samples are required: 5 x 0.9 = 4.5. The average of the 4th and 5th highest "
-        "sample value reported is the 90th percentile. Computation: (0.013 + 0.016) / 2 = 0.0145 mg/L, which "
-        "the document reports as below the then-current lead action level of 0.015 mg/L.",
-        "The same document restates the rule: in situations in which only 5 samples are taken, the average "
-        "of the two with the highest levels is taken to determine the 90th percentile level.",
-    ]),
-    ("40 CFR 141.86(e) - invalid sample results (excerpt)", [
-        "(e) Invalid sample results. The State may invalidate a sample result for cause, including sampling "
-        "error, laboratory error, or a documented data quality objection. A result invalidated under this "
-        "paragraph is not included in the determination of the 90th percentile under 141.80(c)(3).",
-        "A result the system itself marks invalid is not excluded on that mark alone. The exclusion takes "
-        "effect only where the State has approved the invalidation for that sample. The approval record "
-        "carries the sample identifier, the approval type, and the dates that bound the approval. The "
-        "collection date of the sample must fall on or after the effective date and on or before the expiry "
-        "date of the approval.",
-        "A result flagged invalid without a matching approved invalidation is used exactly as reported, "
-        "including where the reported value is the highest in the set. Systems therefore receive no credit "
-        "for self reported invalidation.",
-    ]),
-    ("Office guidance - reduced monitoring frequency and worked example", [
-        "40 CFR 141.86(d) permits the State to reduce the number of samples a system collects where the "
-        "system holds a current reduction approval and has demonstrated a stable record. This office adopts "
-        "the following convention, which controls over the general expectation that reduced monitoring "
-        "follows a clean record.",
-        "Office convention for an annual reduction. Where an annual reduction approval covers the monitoring "
-        "period, the schedule is REDUCED_ANNUAL when the period carries no exceedance, the required minimum "
-        "count is met, and at least one of the two preceding periods in the system record carries an "
-        "exceedance. The excursion is the justification for the reduction, not the obstacle to it. A system "
-        "with annual approval and no exceedance in the preceding two periods takes STANDARD_SEMIANNUAL.",
-        "Office convention for a triennial reduction. Where a triennial reduction approval covers the "
-        "monitoring period, the schedule is REDUCED_TRIENNIAL when the period carries no exceedance, the "
-        "required minimum count is met, and neither the current period nor either of the two preceding "
-        "periods carries an exceedance. Where an annual approval and a triennial approval both cover the "
-        "same period and the triennial conditions are met, the triennial result controls.",
-        "Worked example. A system at 600 population served holds an annual reduction approval effective "
-        "1 March 2024. Its lead 90th percentile is 0.0130 mg/L in January 2024, above the action level, and "
-        "0.0036 mg/L in February 2024. In March 2024 the lead 90th percentile is 0.0036 mg/L and ten samples "
-        "are on file against a reduced minimum of ten. The two preceding periods include one exceedance, so "
-        "the March schedule is REDUCED_ANNUAL. Had the January result been at or below the action level, no "
-        "preceding exceedance would exist and the March schedule would be STANDARD_SEMIANNUAL.",
+    ("Degenerate and edge cells", [
+        "An empty cell (no usable rows for the roster system, period, and "
+        "contaminant) reports n = 0, n_censored = 0, p90 = 0.0000, "
+        "UCL95 = 0.0000, and no exceedance.",
+        "A cell whose only usable rows are censored reports the minimum "
+        "limit: p90 and UCL95 both equal the smallest censored concentration "
+        "in mg/L.",
+        "A cell with exactly one detected value among any number of censored "
+        "values reports the detected value for both p90 and UCL95. A cell "
+        "with a single usable row (n = 1) reports that row's concentration "
+        "for both. A cell with zero fitted variance reports UCL95 = p90.",
+        "Rounded half-up worked check. Completed log values "
+        "-5.80914, -5.65599, -5.52146, -5.29832, -5.11600 with mu = -5.48018 "
+        "and sigma = 0.27506 give p90 = exp(-5.48018 + 1.28155 * 0.27506) = "
+        "0.0059 mg/L and UCL95 = 0.0087 mg/L at n = 10.",
     ]),
 ]

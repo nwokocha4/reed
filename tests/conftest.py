@@ -1,8 +1,8 @@
-"""Shared fixtures for the LCR verifier.
+"""Shared fixtures for the ROS estimation verifier.
 
 Every graded case is run in isolation as an unprivileged user against the
 paths the instruction promises: the case lands in /app/data/<case> and the
-program writes /app/output/<case>_compliance.csv. Nothing about the run
+program writes /app/output/<case>_estimate.csv. Nothing about the run
 depends on the agent having seen the verifier.
 """
 import csv
@@ -82,7 +82,7 @@ def run_case(case):
         capture_output=True, text=True, timeout=TIME_LIMIT,
         **kw
     )
-    out = os.path.join(OUTPUT_DIR, "%s_compliance.csv" % case)
+    out = os.path.join(OUTPUT_DIR, "%s_estimate.csv" % case)
     assert proc.returncode == 0, "program exited %d: %s" % (
         proc.returncode, (proc.stderr or "")[-3000:])
     assert os.path.exists(out), "no output file at %s" % out

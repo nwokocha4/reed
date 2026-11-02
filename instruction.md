@@ -1,9 +1,9 @@
-# LCR Compliance
-Reconstruct compliance; one table per case. Governed by 40 CFR 141.80(c)(3),141.86(a)-(e) in /app/data/reference/lcr_excerpts.pdf (counts). PDF wins if silent; practice wins if stated.
-Cases in /app/data; settled have signed sheets. Files: systems, inventory, results+legacy (disjoint, union), approvals (INVALIDATION names sample else ALL).
-ug/L/1000; U/</0 lowest. Apply all rules; drops never count. Join on system+site. invalid Y out only with matching INVALIDATION in dates. Tier per contaminant: keep highest with active site. Lead pair Y: fifth counts; lone liter drops site; else NA. Survivors=eligible_n.
-Pct: 0=0.0000+violation; <5 max; =5 mean top2; >5 ceil(n*.9)th ascending; ties site_id,date. Half-up 4dp. Exceed if >0.010 lead, >1.3 copper.
-Minimum from PDF only; standard unless reduction covers period; triennial wins if holds. Minimum=violation only. Prior two=preceding present; gaps none; early missing compliant but need approval.
-STANDARD if exceed/violation/default; ANNUAL if clean+annual+>=1 prior exceed; TRIENNIAL if clean+tri+clean current+prior2. Followup NONE alone; MON_VIOLATION if short; PE/SLR lead only; WQP exceeding only; join MON_VIOLATION|PE|SLR|WQP.
-Run python3 /app/solve.py; write /app/output/<case>_compliance.csv header system_id,period,contaminant,eligible_n,percentile_mg_per_L,exceedance,schedule,followup. Key system+period+contaminant. Missing/dup/unknown/nonnumeric fail. Tol 0.0001; else exact.
+# Lead ROS estimates
+Estimate the 90th percentile per cell from censored tap data; one table per case. Method authority: /app/data/reference/lcr_ros_method.pdf (Cunnane, per-row units, delta UCL). PDF wins if silent; practice wins if stated.
+Cases in /app/data (reference/ excluded); settled have signed sheets. Files: systems (roster), results (single source).
+Cells: roster system+period x LEAD,COPPER; other periods/contaminants never count. Unparseable/blank values skipped, not censored.
+Units: ug/L /1000 per row by its own unit; mixed units. Censored if qualifier U or <, or conc<=0; J/B are detects. Counts: n rows used, n_censored among them.
+Order: joint ascending conc; censored below detect at ties. z=Cunnane (i-0.4)/(n+0.2). Line: OLS log-detects on z (detects only). Impute each censored at own z. mu mean, sigma sample sd (n-1) of completed logs. p90=exp(mu+z.90*sigma); se=sigma*sqrt(1/n+z.90^2/(2(n-1))); UCL95=exp(mu+z.90*sigma+z.95*se).
+Edges: empty=0.0000/0.0000 n0; all-censored=min limit both; single detect=its value both; n=1 row value both; sigma0 UCL=p90. Half-up 4dp. Exceed if UCL>0.010 lead, >1.3 copper (p90 never decides).
+Run python3 /app/solve.py; write /app/output/<case>_estimate.csv header system_id,period,contaminant,n,n_censored,p90_mg_per_L,ucl95_mg_per_L,exceedance. Key system+period+contaminant. Missing/dup/unknown/nonnumeric fail. p90+UCL tol 0.0001; else exact.
 You have 28800 seconds. Do not cheat.

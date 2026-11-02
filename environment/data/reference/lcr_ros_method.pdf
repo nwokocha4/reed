@@ -1,0 +1,131 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R 9 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 11 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 1183 >>
+stream
+BT /F1 13 Tf 72 750 Td 15 TL (Lead 90th-percentile estimation from censored tap data - method) Tj ET
+BT /F1 9 Tf 72 728 Td 12 TL
+(This note specifies the estimation method for the 90th percentile of lead and copper tap) Tj T*
+(concentrations when some results are censored \(detection limits\). The data for each system,) Tj T*
+(monitoring period, and contaminant are the reported sample values with their qualifiers.) Tj T*
+(Only the roster in systems.csv defines which system-period cells are reported; results rows) Tj T*
+(for other periods never count.) Tj T*
+() Tj T*
+(Unit conversion is per row: a value reported in ug/L is divided by 1000 to give mg/L. Each) Tj T*
+(row converts by its own unit; the file carries mixed units and no column-wide assumption is) Tj T*
+(valid.) Tj T*
+() Tj T*
+(A result is censored when its qualifier is U or begins with <, or when its converted) Tj T*
+(concentration is zero or below. Other qualifiers \(including J and B\) are detects and are) Tj T*
+(used at face value. A blank value field is unparseable and the row is skipped.) Tj T*
+() Tj T*
+(Only LEAD and COPPER rows are used; rows for any other contaminant are ignored.) Tj T*
+() Tj T*
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 11 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 1329 >>
+stream
+BT /F1 13 Tf 72 750 Td 15 TL (Lognormal regression on order statistics \(ROS\)) Tj ET
+BT /F1 9 Tf 72 728 Td 12 TL
+(Take the natural log of every detected concentration. Sort all observations \(detects and) Tj T*
+(censored limits\) in joint ascending order by converted concentration. A censored limit ranks) Tj T*
+(below a detect reported at the same numeric value, because the true concentration is at or) Tj T*
+(below the limit.) Tj T*
+() Tj T*
+(Assign each rank i = 1..n the Cunnane plotting position p = \(i - 0.4\) / \(n + 0.2\) and the) Tj T*
+(standard normal quantile z of p. Regress the log-detects on their normal quantiles \(ordinary) Tj T*
+(least squares\): the fitted line gives the lognormal location and scale. The regression uses) Tj T*
+(detects only; censored limits are never regressed, only imputed.) Tj T*
+() Tj T*
+(Impute each censored observation from the fitted line at its own rank quantile. The) Tj T*
+(completed log-sample is the observed log-detects plus the imputed values. Its mean mu and) Tj T*
+(sample standard deviation sigma \(denominator n - 1\) are the lognormal parameters.) Tj T*
+() Tj T*
+(The 90th percentile estimate is p90 = exp\(mu + z_0.90 * sigma\), where z_0.90 is the 0.90) Tj T*
+(quantile of the standard normal. Report p90 in mg/L rounded half up to four decimals.) Tj T*
+() Tj T*
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 11 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 870 >>
+stream
+BT /F1 13 Tf 72 750 Td 15 TL (Sampling uncertainty - one-sided upper confidence limit) Tj ET
+BT /F1 9 Tf 72 728 Td 12 TL
+(The reported finding accounts for sampling uncertainty through a one-sided upper 95 percent) Tj T*
+(confidence limit on the lognormal 90th percentile, by the delta method. Its standard error) Tj T*
+(is se = sigma * sqrt\(1/n + z_0.90^2 / \(2*\(n-1\)\)\). The upper limit is UCL95 = exp\(mu + z_0.90) Tj T*
+(* sigma + z_0.95 * se\), where z_0.95 is the 0.95 quantile of the standard normal. Report) Tj T*
+(UCL95 in mg/L rounded half up to four decimals.) Tj T*
+() Tj T*
+(A cell exceeds the action level when its UCL95 is greater than the action level: 0.010 mg/L) Tj T*
+(for lead, 1.3 mg/L for copper. The point estimate alone never decides the finding; a p90) Tj T*
+(below the action level with a UCL95 above it is an exceedance.) Tj T*
+() Tj T*
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 11 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 1009 >>
+stream
+BT /F1 13 Tf 72 750 Td 15 TL (Degenerate and edge cells) Tj ET
+BT /F1 9 Tf 72 728 Td 12 TL
+(An empty cell \(no usable rows for the roster system, period, and contaminant\) reports n = 0,) Tj T*
+(n_censored = 0, p90 = 0.0000, UCL95 = 0.0000, and no exceedance.) Tj T*
+() Tj T*
+(A cell whose only usable rows are censored reports the minimum limit: p90 and UCL95 both) Tj T*
+(equal the smallest censored concentration in mg/L.) Tj T*
+() Tj T*
+(A cell with exactly one detected value among any number of censored values reports the) Tj T*
+(detected value for both p90 and UCL95. A cell with a single usable row \(n = 1\) reports that) Tj T*
+(row's concentration for both. A cell with zero fitted variance reports UCL95 = p90.) Tj T*
+() Tj T*
+(Rounded half-up worked check. Completed log values -5.80914, -5.65599, -5.52146, -5.29832,) Tj T*
+(-5.11600 with mu = -5.48018 and sigma = 0.27506 give p90 = exp\(-5.48018 + 1.28155 * 0.27506\)) Tj T*
+(= 0.0059 mg/L and UCL95 = 0.0087 mg/L at n = 10.) Tj T*
+() Tj T*
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 12
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000139 00000 n 
+0000000266 00000 n 
+0000001501 00000 n 
+0000001628 00000 n 
+0000003009 00000 n 
+0000003136 00000 n 
+0000004057 00000 n 
+0000004185 00000 n 
+0000005247 00000 n 
+trailer
+<< /Size 12 /Root 1 0 R >>
+startxref
+5318
+%%EOF

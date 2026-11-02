@@ -21,7 +21,7 @@ TIME_LIMIT = 300
 
 
 def run_candidate(cand, case):
-    work = tempfile.mkdtemp(prefix="lcr_ev_")
+    work = tempfile.mkdtemp(prefix="ros_ev_")
     try:
         datadir = os.path.join(work, "data")
         os.makedirs(os.path.join(datadir, case))
@@ -35,7 +35,7 @@ def run_candidate(cand, case):
         if proc.returncode != 0:
             return False, "exit %d: %s" % (
                 proc.returncode, (proc.stderr or "")[-1500:])
-        out = os.path.join(work, "output", "%s_compliance.csv" % case)
+        out = os.path.join(work, "output", "%s_estimate.csv" % case)
         if not os.path.exists(out):
             return False, "missing output for %s" % case
         with open(out, newline="", encoding="utf-8-sig") as f:

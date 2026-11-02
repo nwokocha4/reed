@@ -1,10 +1,10 @@
-"""Graded checks for the Lead and Copper Rule task (pytest entry).
+"""Graded checks for the censored-data ROS estimation task (pytest entry).
 
 Each graded case is staged fresh under /app, the submitted /app/solve.py is
 run as an unprivileged user, and every output row is keyed by
-(system_id, period, contaminant), order free. Percentiles must match within
-1e-4; every other column must match exactly. check_rows is also imported by
-the authoring evidence scorer, so keep it dependency free.
+(system_id, period, contaminant), order free. p90 and UCL95 must each match
+within 1e-4; every other column must match exactly. check_rows is also
+imported by the authoring evidence scorer, so keep it dependency free.
 """
 import csv
 import json
@@ -15,8 +15,8 @@ import pytest
 from conftest import EXPECTED_PATH, GRADED_DIR, OUTPUT_DIR, run_case
 
 TOL = 1e-4
-HEADER = ["system_id", "period", "contaminant", "eligible_n",
-          "percentile_mg_per_L", "exceedance", "schedule", "followup"]
+HEADER = ["system_id", "period", "contaminant", "n", "n_censored",
+          "p90_mg_per_L", "ucl95_mg_per_L", "exceedance"]
 
 
 def _key(r):
@@ -35,15 +35,16 @@ def check_rows(got, exp_rows):
         if key not in exp:
             raise AssertionError("unknown key %r" % (key,))
         e = exp[key]
-        try:
-            gv = float(r["percentile_mg_per_L"])
-            ev = float(e["percentile_mg_per_L"])
-        except (ValueError, TypeError):
-            raise AssertionError("nonnumeric percentile for %r" % (key,))
-        if abs(gv - ev) > TOL:
-            raise AssertionError(
-                "percentile miss for %r: got %s want %s" % (key, gv, ev))
-        for col in ("eligible_n", "exceedance", "schedule", "followup"):
+        for col in ("p90_mg_per_L", "ucl95_mg_per_L"):
+            try:
+                gv = float(r[col])
+                ev = float(e[col])
+            except (ValueError, TypeError):
+                raise AssertionError("nonnumeric %s for %r" % (col, key))
+            if abs(gv - ev) > TOL:
+                raise AssertionError(
+                    "%s miss for %r: got %s want %s" % (col, key, gv, ev))
+        for col in ("n", "n_censored", "exceedance"):
             if r.get(col, "") != e[col]:
                 raise AssertionError(
                     "%s mismatch for %r: got %r want %r"
@@ -55,7 +56,7 @@ def check_rows(got, exp_rows):
 
 
 def _header_ok(case):
-    path = os.path.join(OUTPUT_DIR, "%s_compliance.csv" % case)
+    path = os.path.join(OUTPUT_DIR, "%s_estimate.csv" % case)
     with open(path, newline="", encoding="utf-8-sig") as f:
         header = next(csv.reader(f))
     assert header == HEADER, "header mismatch in %s: %r" % (case, header)

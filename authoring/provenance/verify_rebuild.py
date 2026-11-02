@@ -3,13 +3,13 @@ reference PDF from the builder, and confirm they match the committed trees.
 
 Run from the task folder: python3 authoring/provenance/verify_rebuild.py.
 Compares the regenerated output against authoring/provenance/cases,
-tests/graded, environment/data/settled_* (excluding the signed sheets),
-and environment/data/reference/lcr_excerpts.pdf.
+tests/graded, environment/data/settled_* (results/systems only; the signed
+sheets are oracle outputs and are skipped), and
+environment/data/reference/lcr_ros_method.pdf.
 """
 import filecmp
 import hashlib
 import os
-import random
 import shutil
 import sys
 import tempfile
@@ -57,32 +57,31 @@ def main():
     ok = True
     sys.path.insert(0, os.path.join(PROV, "reference_build"))
     sys.path.insert(0, PROV)
-    work = tempfile.mkdtemp(prefix="lcr_rebuild_")
+    work = tempfile.mkdtemp(prefix="ros_rebuild_")
     try:
         from ref_common import PAGES, build_pdf
-        fresh_pdf = os.path.join(work, "lcr_excerpts.pdf")
+        fresh_pdf = os.path.join(work, "lcr_ros_method.pdf")
         build_pdf(fresh_pdf, PAGES)
         live_pdf = os.path.join(TASK, "environment", "data",
-                                "reference", "lcr_excerpts.pdf")
+                                "reference", "lcr_ros_method.pdf")
         if sha256(fresh_pdf) != sha256(live_pdf):
-            print("FAIL pdf: rebuilt lcr_excerpts.pdf differs from committed copy")
+            print("FAIL pdf: rebuilt lcr_ros_method.pdf differs from committed copy")
             ok = False
         else:
-            print("OK pdf: rebuilt lcr_excerpts.pdf matches (%s)"
+            print("OK pdf: rebuilt lcr_ros_method.pdf matches (%s)"
                   % sha256(live_pdf)[:16])
         import seeded_generator as gen
         staged = os.path.join(work, "cases")
         os.makedirs(staged)
         gen.OUT = staged
         gen.sid_counter[0] = 1000
-        gen.R = random.Random(20261101)
         gen.settled_cases()
-        gen.graded_01_five_sample_avg()
-        gen.graded_02_fewer_than_five()
-        gen.graded_03_tier_filter()
-        gen.graded_04_pair_selection()
-        gen.graded_05_invalidation()
-        gen.graded_06_schedule_chain()
+        gen.graded_01_unit_conversion()
+        gen.graded_02_censor_flags()
+        gen.graded_03_tie_order()
+        gen.graded_04_zero_rows()
+        gen.graded_05_ucl_exceedance()
+        gen.graded_06_edge_branches()
         ok &= compare(staged, os.path.join(PROV, "cases"), "cases-vs-generator")
         ok &= compare(os.path.join(staged, "settled_01"),
                       os.path.join(TASK, "environment", "data", "settled_01"),
