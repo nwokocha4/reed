@@ -1,5 +1,5 @@
 FROM python:3.12-slim
 WORKDIR /app
-COPY environment/data /app/data
+COPY data /app/data
 RUN mkdir -p /app/output
 CMD ["python3", "/app/solve.py"]
