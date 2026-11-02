@@ -49,5 +49,6 @@ and keys every output row by system plus period plus contaminant with
 order free. Missing rows, duplicated keys, unknown keys, and nonnumeric
 p90/UCL95 values fail the case. p90 and UCL95 must each match within
 0.0001 and every other column must match exactly. `tests/expected.json`
-holds the oracle rows. `tests/test.sh` runs the suite and emits CTRF.
+holds the oracle rows. `tests/test.sh` runs the suite, emits CTRF, and writes the reward to
+`/logs/verifier/reward.txt` where the harness reads it.
 Reward is 1 only when every row of every case passes.
