@@ -99,7 +99,7 @@ def build_pdf(path, pages, title="Lead and Copper Rule - censored-data estimatio
         f.write(bytes(out))
 
 PAGES = [
-    ("Lead 90th-percentile estimation from censored tap data - method", [
+    ("1. Data and reporting basis - Lead 90th-percentile estimation from censored tap data", [
         "This note specifies the estimation method for the 90th percentile of "
         "lead and copper tap concentrations when some results are censored "
         "(detection limits). The data for each system, monitoring period, and "
@@ -116,7 +116,7 @@ PAGES = [
         "Only LEAD and COPPER rows are used; rows for any other contaminant "
         "are ignored.",
     ]),
-    ("Lognormal regression on order statistics (ROS)", [
+    ("2. Lognormal regression on order statistics (ROS)", [
         "Take the natural log of every detected concentration. Sort all "
         "observations (detects and censored limits) in joint ascending order "
         "by converted concentration. A censored limit ranks below a detect "
@@ -136,7 +136,7 @@ PAGES = [
         "where z_0.90 is the 0.90 quantile of the standard normal. Report "
         "p90 in mg/L rounded half up to four decimals.",
     ]),
-    ("Sampling uncertainty - one-sided upper confidence limit", [
+    ("3. Sampling uncertainty - one-sided upper confidence limit", [
         "The reported finding accounts for sampling uncertainty through a "
         "one-sided upper 95 percent confidence limit on the lognormal 90th "
         "percentile, by the delta method. Its standard error is "
@@ -149,7 +149,7 @@ PAGES = [
         "estimate alone never decides the finding; a p90 below the action "
         "level with a UCL95 above it is an exceedance.",
     ]),
-    ("Degenerate and edge cells", [
+    ("4. Degenerate and edge cells", [
         "An empty cell (no usable rows for the roster system, period, and "
         "contaminant) reports n = 0, n_censored = 0, p90 = 0.0000, "
         "UCL95 = 0.0000, and no exceedance.",

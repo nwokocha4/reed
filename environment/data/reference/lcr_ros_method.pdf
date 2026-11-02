@@ -10,9 +10,9 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 11 0 R >> >> /Contents 4 0 R >>
 endobj
 4 0 obj
-<< /Length 1183 >>
+<< /Length 1204 >>
 stream
-BT /F1 13 Tf 72 750 Td 15 TL (Lead 90th-percentile estimation from censored tap data - method) Tj ET
+BT /F1 13 Tf 72 750 Td 15 TL (1. Data and reporting basis - Lead 90th-percentile estimation from censored tap data) Tj ET
 BT /F1 9 Tf 72 728 Td 12 TL
 (This note specifies the estimation method for the 90th percentile of lead and copper tap) Tj T*
 (concentrations when some results are censored \(detection limits\). The data for each system,) Tj T*
@@ -37,9 +37,9 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 11 0 R >> >> /Contents 6 0 R >>
 endobj
 6 0 obj
-<< /Length 1329 >>
+<< /Length 1332 >>
 stream
-BT /F1 13 Tf 72 750 Td 15 TL (Lognormal regression on order statistics \(ROS\)) Tj ET
+BT /F1 13 Tf 72 750 Td 15 TL (2. Lognormal regression on order statistics \(ROS\)) Tj ET
 BT /F1 9 Tf 72 728 Td 12 TL
 (Take the natural log of every detected concentration. Sort all observations \(detects and) Tj T*
 (censored limits\) in joint ascending order by converted concentration. A censored limit ranks) Tj T*
@@ -65,9 +65,9 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 11 0 R >> >> /Contents 8 0 R >>
 endobj
 8 0 obj
-<< /Length 870 >>
+<< /Length 873 >>
 stream
-BT /F1 13 Tf 72 750 Td 15 TL (Sampling uncertainty - one-sided upper confidence limit) Tj ET
+BT /F1 13 Tf 72 750 Td 15 TL (3. Sampling uncertainty - one-sided upper confidence limit) Tj ET
 BT /F1 9 Tf 72 728 Td 12 TL
 (The reported finding accounts for sampling uncertainty through a one-sided upper 95 percent) Tj T*
 (confidence limit on the lognormal 90th percentile, by the delta method. Its standard error) Tj T*
@@ -86,9 +86,9 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 11 0 R >> >> /Contents 10 0 R >>
 endobj
 10 0 obj
-<< /Length 1009 >>
+<< /Length 1012 >>
 stream
-BT /F1 13 Tf 72 750 Td 15 TL (Degenerate and edge cells) Tj ET
+BT /F1 13 Tf 72 750 Td 15 TL (4. Degenerate and edge cells) Tj ET
 BT /F1 9 Tf 72 728 Td 12 TL
 (An empty cell \(no usable rows for the roster system, period, and contaminant\) reports n = 0,) Tj T*
 (n_censored = 0, p90 = 0.0000, UCL95 = 0.0000, and no exceedance.) Tj T*
@@ -117,15 +117,15 @@ xref
 0000000064 00000 n 
 0000000139 00000 n 
 0000000266 00000 n 
-0000001501 00000 n 
-0000001628 00000 n 
-0000003009 00000 n 
-0000003136 00000 n 
-0000004057 00000 n 
-0000004185 00000 n 
-0000005247 00000 n 
+0000001522 00000 n 
+0000001649 00000 n 
+0000003033 00000 n 
+0000003160 00000 n 
+0000004084 00000 n 
+0000004212 00000 n 
+0000005277 00000 n 
 trailer
 << /Size 12 /Root 1 0 R >>
 startxref
-5318
+5348
 %%EOF
